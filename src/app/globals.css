@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0f172a;
+  --foreground: #f8fafc;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+/* Party color utilities */
+.bg-party-ldp { background-color: #e31e26; }
+.bg-party-chudou { background-color: #00a0e9; }
+.bg-party-ishin { background-color: #38b649; }
+.bg-party-dpfp { background-color: #f39800; }
+.bg-party-sanseito { background-color: #ff6600; }
+.bg-party-jcp { background-color: #c71c22; }
+.bg-party-reiwa { background-color: #ed6d9b; }
+
+/* Confidence level opacity */
+.confidence-high { opacity: 1; }
+.confidence-medium { opacity: 0.7; }
+.confidence-low { opacity: 0.4; }
+
+/* Map hover effect */
+.prefecture-path {
+  transition: all 0.2s ease;
+}
+
+.prefecture-path:hover {
+  filter: brightness(1.2);
+  cursor: pointer;
+}

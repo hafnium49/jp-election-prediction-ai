@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Prediction {
+  id            String   @id @default(cuid())
+  type          String   // "overall" | "prefecture" | "proportional"
+  targetId      String   // prefecture_id or block_id, "national" for overall
+  createdAt     DateTime @default(now())
+
+  // Raw AI responses (for debugging/audit)
+  perplexityRaw String   @db.Text
+  grokRaw       String   @db.Text
+  geminiRaw     String   @db.Text
+
+  // Structured prediction data
+  prediction    Json
+
+  // Relations
+  districtPredictions     DistrictPrediction[]
+  proportionalPrediction  ProportionalPrediction?
+  overallAnalysis         OverallAnalysis?
+
+  @@index([type, targetId])
+  @@index([createdAt])
+}
+
+model DistrictPrediction {
+  id              String   @id @default(cuid())
+  predictionId    String
+  districtId      String
+  winnerId        String?  // Candidate ID (nullable if unknown)
+  winnerPartyId   String
+  confidence      String   // "high" | "medium" | "low"
+  voteShareMin    Float?
+  voteShareMax    Float?
+  analysis        String   @db.Text
+  createdAt       DateTime @default(now())
+
+  prediction      Prediction @relation(fields: [predictionId], references: [id], onDelete: Cascade)
+
+  @@index([districtId])
+  @@index([predictionId])
+}
+
+model ProportionalPrediction {
+  id              String   @id @default(cuid())
+  predictionId    String   @unique
+  blockId         String
+  partySeats      Json     // { "ldp": 5, "chudou": 3, ... }
+  totalSeats      Int
+  analysis        String   @db.Text
+  createdAt       DateTime @default(now())
+
+  prediction      Prediction @relation(fields: [predictionId], references: [id], onDelete: Cascade)
+
+  @@index([blockId])
+}
+
+model OverallAnalysis {
+  id                  String   @id @default(cuid())
+  predictionId        String   @unique
+  cabinetApproval     Float
+  partySupport        Json     // { "ldp": 27.4, "chudou": 15.2, ... }
+  keyIssues           Json     // Array of { issue, importance, favorable_to }
+  nationalTrend       String   // "ruling_advantage" | "opposition_advantage" | "close"
+  seatProjection      Json     // { "ldp": 230, "chudou": 128, ... }
+  totalSeats          Int      @default(465)
+  majorityThreshold   Int      @default(233)
+  createdAt           DateTime @default(now())
+
+  prediction          Prediction @relation(fields: [predictionId], references: [id], onDelete: Cascade)
+}
+
+model UpdateLog {
+  id          String    @id @default(cuid())
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+  status      String    // "running" | "completed" | "failed"
+  apiCalls    Int       @default(0)
+  errors      Json?     // Array of error messages
+  duration    Int?      // Duration in seconds
+}
