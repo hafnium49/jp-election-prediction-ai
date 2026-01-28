@@ -1,6 +1,6 @@
 # Japan Election Prediction System
 
-> **DISCLAIMER:** This project is an unofficial, open-source implementation of an election prediction pipeline. It is **not** affiliated with, endorsed by, or connected to Horiemon AI Gakko KK or the official vote.horiemon.ai project. All code and prompts in this repository are original implementations.
+> **DISCLAIMER:** This is an **educational research project** developed for self-learning purposes. It is an unofficial, open-source implementation designed to study multi-agent AI architectures. It is **not** affiliated with, endorsed by, or connected to Horiemon AI Gakko KK or the official vote.horiemon.ai project. All code and prompts in this repository are original implementations.
 
 Japanese House of Representatives election prediction system using a 3-AI pipeline (Perplexity + Grok + Gemini).
 
